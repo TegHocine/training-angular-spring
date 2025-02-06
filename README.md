@@ -1,24 +1,10 @@
-
-
-Clone the repository: git clone https://github.com/TegHocine/training-angular-spring.git
-
-# Backend (Spring Boot) Setup:
-cd back
-docker compose up -d
-Build the Spring Boot project: ./mvnw spring-boot:run
-
-# Frontend (Angular) Setup:
-cd front
-Install Angular dependencies: npm install
-Start the Angular development server: ng serve
-
-
 # Project Setup Guide
 
 ## Prerequisites
 - Ensure you have Docker installed.
 - Install Node.js.
 - Make sure you have Java (JDK 17 or higher) installed.
+- swagger: http://localhost:8080/swagger-ui/index.html#/
 
 ## Cloning the Repository
 Start by cloning the repository to your local machine:
