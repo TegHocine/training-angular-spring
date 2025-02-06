@@ -1,0 +1,21 @@
+<p-toast />
+<main class="flex flex-col h-screen max-w-7xl px-2 py-6 mx-auto gap-3">
+  <app-product-form-component
+    [categories]="categories"
+    (onSave)="onSave($event)"
+  />
+
+  <app-product-list-component
+    [products]="products"
+    (onDelete)="onDelete($event)"
+    (onEdit)="onEdit($event)"
+  ></app-product-list-component>
+
+  <app-product-detail-component
+    [visible]="visible"
+    (onClose)="onClose()"
+    [product]="selectedProduct"
+    (onSave)="onUpdate($event)"
+    [categories]="categories"
+  />
+</main>

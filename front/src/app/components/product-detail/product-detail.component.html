@@ -1,0 +1,113 @@
+<div class="card ml-auto w-fit">
+  <p-dialog
+    header="Modifier un produit"
+    [modal]="true"
+    [(visible)]="visible"
+    [style]="{ width: '30rem' }"
+  >
+    <form [formGroup]="productForm" class="grid gap-3">
+      <div class="grid gap-2">
+        <label for="category" class="font-semibold">Catégorie</label>
+        <p-select
+          id="category"
+          formControlName="category_id"
+          [options]="categories"
+          optionLabel="name"
+          optionValue="id"
+          placeholder="Sélectionner une catégorie"
+        ></p-select>
+        <small
+          class="text-red-600"
+          *ngIf="
+            productForm.controls['category_id'].touched &&
+            productForm.controls['category_id'].invalid
+          "
+        >
+          La catégorie est requise.
+        </small>
+      </div>
+
+      <div class="grid gap-2">
+        <label for="name" class="font-semibold">Nom du produit</label>
+        <input pInputText id="name" formControlName="name" class="w-full" />
+        <small
+          class="text-red-600"
+          *ngIf="
+            productForm.controls['name'].touched &&
+            productForm.controls['name'].invalid
+          "
+        >
+          Le nom est requis.
+        </small>
+      </div>
+
+      <div class="grid gap-2">
+        <label for="description" class="font-semibold">Description</label>
+        <input
+          pInputText
+          id="description"
+          formControlName="description"
+          class="w-full"
+        />
+        <small
+          class="text-red-600"
+          *ngIf="
+            productForm.controls['description'].touched &&
+            productForm.controls['description'].invalid
+          "
+        >
+          La description est requise.
+        </small>
+      </div>
+
+      <div class="grid gap-2">
+        <label for="price" class="font-semibold">Prix</label>
+        <input
+          pInputText
+          id="price"
+          type="number"
+          formControlName="price"
+          class="w-full"
+        />
+        <small
+          class="text-red-600"
+          *ngIf="
+            productForm.controls['price'].touched &&
+            productForm.controls['price'].invalid
+          "
+        >
+          Un prix valide est requis.
+        </small>
+      </div>
+
+      <div class="grid gap-2">
+        <label for="quantity" class="font-semibold">Quantité</label>
+        <input
+          pInputText
+          id="quantity"
+          type="number"
+          formControlName="quantity"
+          class="w-full"
+        />
+        <small
+          class="text-red-600"
+          *ngIf="
+            productForm.controls['quantity'].touched &&
+            productForm.controls['quantity'].invalid
+          "
+        >
+          Une quantité valide est requise.
+        </small>
+      </div>
+
+      <div class="flex justify-end gap-2">
+        <p-button
+          label="Annuler"
+          severity="secondary"
+          (click)="onCancelClick()"
+        />
+        <p-button label="Enregistrer" (click)="saveProduct()" />
+      </div>
+    </form>
+  </p-dialog>
+</div>
