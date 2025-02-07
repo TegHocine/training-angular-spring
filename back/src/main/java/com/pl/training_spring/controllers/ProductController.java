@@ -18,9 +18,19 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductDtoOut>> getProducts() {
-        return ResponseEntity.ok(productService.getProducts());
+    public ResponseEntity<List<ProductDtoOut>> getProducts(@RequestParam(required = false) String name,
+                                                           @RequestParam(required = false) Long category,
+                                                           @RequestParam(required = false) Integer minPrice,
+                                                           @RequestParam(required = false) Integer maxPrice) {
+        return ResponseEntity.ok(productService.getProducts(
+                name,
+                category != null ? category : 0L,
+                minPrice != null ? minPrice : 0,
+                maxPrice != null ? maxPrice : Integer.MAX_VALUE
+        ));
     }
+
+
 
     @PostMapping
     public ResponseEntity<ProductDtoOut> addProduct(@RequestBody ProductDtoIn productDtoIn) {

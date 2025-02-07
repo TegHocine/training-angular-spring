@@ -1,9 +1,15 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, ReplaySubject, tap } from 'rxjs';
 import { CreateProduct, Product } from '../types/product.type';
 
 type Products = Product[];
+
+type GetProps = {
+  name?: string;
+  category?: number;
+  priceRange: [number, number];
+};
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +17,7 @@ type Products = Product[];
 export class ProductService {
   readonly url = '/api/v1/products';
   public _products: ReplaySubject<Products> = new ReplaySubject<Products>(1);
+  private params = new HttpParams();
 
   constructor(private http: HttpClient) {}
 
@@ -18,10 +25,23 @@ export class ProductService {
     return this._products.asObservable();
   }
 
+  setParams(params: GetProps): void {
+    this.params = new HttpParams();
+    this.params = this.params.set('name', params?.name || '');
+    this.params = this.params.set(
+      'category',
+      params?.category?.toString() || ''
+    );
+    this.params = this.params.set('minPrice', params.priceRange[0].toString());
+    this.params = this.params.set('maxPrice', params.priceRange[1].toString());
+
+    this.get().subscribe();
+  }
+
   get(): Observable<Products> {
-    return this.http.get<Products>(this.url).pipe(
-      tap((collaborators: Products) => {
-        this._products.next(collaborators);
+    return this.http.get<Products>(this.url, { params: this.params }).pipe(
+      tap((products: Products) => {
+        this._products.next(products);
       })
     );
   }

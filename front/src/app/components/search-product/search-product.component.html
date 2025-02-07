@@ -1,0 +1,39 @@
+<form [formGroup]="searchForm" class="flex items-center gap-4">
+  <div class="min-w-60">
+    <input
+      type="text"
+      pInputText
+      formControlName="name"
+      placeholder="Nom du produit"
+      class="w-full"
+    />
+  </div>
+
+  <div class="min-w-60">
+    <p-select
+      formControlName="category"
+      [options]="categories"
+      optionLabel="name"
+      optionValue="id"
+      placeholder="Sélectionner une catégorie"
+      class="w-full"
+    >
+    </p-select>
+  </div>
+
+  <div class="min-w-60 grid gap-3 ml-2">
+    <label class="font-medium text-xs text-neutral-400">
+      Plage de prix: {{ searchForm.value.priceRange[0] }} -
+      {{ searchForm.value.priceRange[1] }}
+    </label>
+
+    <p-slider formControlName="priceRange" [range]="true" [min]="0" [max]="999">
+    </p-slider>
+  </div>
+  <p-button
+    label="Réinitialiser"
+    severity="secondary"
+    (onClick)="onReset()"
+    class="ml-auto"
+  />
+</form>

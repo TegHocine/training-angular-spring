@@ -13,12 +13,15 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { Dialog } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
+import { catchError, of, take } from 'rxjs';
+import { ProductService } from '../../services/product.service';
 import { Category } from '../../types/category.type';
-import { CreateProduct, Product } from '../../types/product.type';
+import { Product } from '../../types/product.type';
 
 @Component({
   selector: 'app-product-detail-component',
@@ -37,12 +40,15 @@ export class ProductDetailComponent implements OnChanges {
   @Input() visible: boolean = false;
   @Input() product: Product | null = null;
   @Input() categories: Category[] = [];
-  @Output() onSave = new EventEmitter<CreateProduct>();
   @Output() onClose = new EventEmitter();
 
   productForm: FormGroup;
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private productService: ProductService,
+    private messageService: MessageService
+  ) {
     this.productForm = this.fb.group({
       id: this.product?.id || 0,
       name: [this.product?.name || '', Validators.required],
@@ -59,13 +65,37 @@ export class ProductDetailComponent implements OnChanges {
     });
   }
 
-  onCancelClick() {
+  onCloseEmit() {
     this.onClose.emit();
   }
 
-  saveProduct() {
+  onUpdate() {
     if (this.productForm.valid) {
-      this.onSave.emit(this.productForm.value);
+      this.productService
+        .update(this.productForm.value)
+        .pipe(
+          take(1),
+          catchError(() => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Erreur',
+              detail:
+                'Erreur lors de la modification du produit. Veuillez réessayer.',
+              life: 3000,
+            });
+            this.onCloseEmit();
+            return of(null);
+          })
+        )
+        .subscribe(() => {
+          this.onCloseEmit();
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Succès',
+            detail: 'Produit modifié avec succès.',
+            life: 3000,
+          });
+        });
       this.productForm.reset();
       this.visible = false;
     } else {

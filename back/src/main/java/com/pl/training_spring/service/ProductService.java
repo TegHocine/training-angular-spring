@@ -24,8 +24,8 @@ public class ProductService {
     }
 
 
-    public List<ProductDtoOut> getProducts() {
-        List<Product> products = productRepository.findAll();
+    public List<ProductDtoOut> getProducts(String name, Long category, Integer minPrice, Integer maxPrice) {
+        List<Product> products = productRepository.searchProducts(name, category, minPrice, maxPrice);
         return ProductMapper.INSTANCE.productToProductDtoOuts(products);
     }
 
@@ -66,4 +66,6 @@ public class ProductService {
 
         return ProductMapper.INSTANCE.productToProductDtoOut(updatedProduct);
     }
+
+
 }

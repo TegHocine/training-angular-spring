@@ -1,17 +1,19 @@
 import { CommonModule } from '@angular/common'; // ✅ Import CommonModule
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { Dialog } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
+import { catchError, of, take } from 'rxjs';
+import { ProductService } from '../../services/product.service';
 import { Category } from '../../types/category.type';
-import { CreateProduct } from '../../types/product.type';
 
 @Component({
   selector: 'app-product-form-component',
@@ -30,9 +32,13 @@ export class ProductFormComponent {
   visible: boolean = false;
   productForm: FormGroup;
   @Input() categories: Category[] = [];
-  @Output() onSave = new EventEmitter<CreateProduct>();
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private productService: ProductService,
+
+    private messageService: MessageService
+  ) {
     this.productForm = this.fb.group({
       name: ['', Validators.required],
       description: ['', Validators.required],
@@ -46,9 +52,31 @@ export class ProductFormComponent {
     this.visible = true;
   }
 
-  saveProduct() {
+  onSave() {
     if (this.productForm.valid) {
-      this.onSave.emit(this.productForm.value);
+      this.productService
+        .add(this.productForm.value)
+        .pipe(
+          take(1),
+          catchError(() => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Erreur',
+              detail:
+                'Impossible d’ajouter le produit. Veuillez réessayer plus tard.',
+              life: 3000,
+            });
+            return of(null);
+          })
+        )
+        .subscribe(() => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Succès',
+            detail: 'Produit ajouté avec succès.',
+            life: 3000,
+          });
+        });
       this.productForm.reset();
       this.visible = false;
     } else {
