@@ -3,6 +3,7 @@
     header="Modifier un produit"
     [modal]="true"
     [(visible)]="visible"
+    (onHide)="onCloseEmit()"
     [style]="{ width: '30rem' }"
   >
     <form [formGroup]="productForm" class="grid gap-3">
